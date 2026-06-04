@@ -1,128 +1,312 @@
+# MCQ Generator using LLM
 
-# MCQ Generation using LLM
+MCQ Generator is an AI-powered web application that uses Large Language Models (LLMs) to generate multiple-choice questions for Computer Science learning and instruction.
 
-Generating Multi-Choices Questions (MCQ) that evaluates diverse knowledge of the test takers is often 
-very challenging and time-consuming task. Large Language Models (LLMs) hold a promising method that can 
-be useful while meeting the objectives of the MCQ.
+The project explores how LLMs can support Computer Science education by automating question generation, answer checking, answer explanation, prerequisite knowledge generation, and similar question creation.
 
-## Using the Power of AI in Question Generation
+## Project Topic
 
-Our MCQ Generator leverages new AI models, including **OpenAI's GPT** and the **open-source Ollama framework**, to generate thoughtful, relevant, and challenging questions. These models allow the tool to create questions that are not only grammatically accurate but also contextually relevant, tailored to various subjects and difficulty levels.
+**Exploring How LLMs Can Automate Computer Science Instruction**
 
-### Key Features
+This project focuses on using LLMs as an assistant for instructors and students. Instead of manually creating quiz questions and explanations, users can input a Computer Science topic and allow the system to generate structured learning materials automatically.
 
-#### 1. Flexible Model Selection
-Choose between OpenAI's GPT models or the open-source Ollama framework to suit your needs, whether you're looking for performance, cost-efficiency, or specific use cases.
+## Features
 
-#### 2. Customizable Question Generation
-Tailor your quiz to perfection with these CLI options:
-- **Field**: Subject area for question generation (required).
-- **Subfield**: Optional sub-category within the field.
-- **Difficulty Level**: Select from easy, medium, or hard (default: medium).
-- **Number of Questions**: Choose how many questions to generate (default: 5).
-- **Options per Question**: Define the number of answer choices (required, must be > 1).
-- **Correct Answers**: Set number of correct answers per question (default: 1).
-  - Use `0` for "None of the Above" questions
-  - Use value equal to options count for "All of the Above" questions
-- **Maximum Token Limit**: Adjust the token limit for LLM response (default: 3000).
+### 1. MCQ Question Generation
 
-#### 3. Comprehensive Question Analysis
-For every generated question, users can:
-- **Check the Correct Answer**: Instantly verify the solution.
-- **Request a Detailed Explanation**: Gain insights into why the answer is correct or incorrect.
-- **Access Prerequisite Knowledge**: Understand any foundational concepts needed for the question.
-- **Translate the Question**: Convert the question to different languages (currently supporting English and Hindi).
+Users can generate multiple-choice questions based on a selected Computer Science topic and difficulty level.
 
-#### 4. Intelligent Caching
-Our caching system optimizes performance by minimizing redundant API calls. If a question's explanation, prerequisites, or translation has been generated before, the system retrieves it instantly from memory.
+Example topics:
 
-#### 5. Unique Question Identification
-Each generated question is assigned a unique identifier, making it easy to track, reference, and reuse specific questions. This identifier includes the specialization and a counter for easy question management.
+* Python Programming - Functions and Loops
+* Basic SQL - SELECT and WHERE
+* Object-Oriented Programming - Classes and Objects
+* Computer Networks - DNS and DHCP
+* Operating Systems - Process Scheduling
+* Data Structures - Stack and Queue
 
-## CLI Usage
+### 2. Model Selection
 
-The MCQ Generator provides a command-line interface for question generation:
+The application supports model selection through LiteLLM.
 
-```bash
-python mcq_generate_cli.py \
-  --field "Physics" \
-  --subfield "Mechanics" \
-  --difficulty hard \
-  --count 5 \
-  --options 4 \
-  --correct-answers 1 \
-  --provider perplexity \
-  --model sonar \
-  --save questions.json
+Current model options include:
+
+* Gemini 2.5 Flash-Lite
+* Gemini 2.5 Flash
+* OpenAI GPT-4o mini
+
+Gemini 2.5 Flash-Lite is suitable for fast and cost-efficient question generation, while stronger models can be used when more detailed explanations are needed.
+
+### 3. Difficulty Selection
+
+Users can choose the difficulty level of generated questions:
+
+* Easy
+* Medium
+* Hard
+
+This allows the system to generate questions suitable for different learning levels.
+
+### 4. Answer Checking
+
+After questions are generated, users can select an answer and check whether it is correct.
+
+The system provides immediate feedback by showing whether the selected answer is correct or incorrect.
+
+### 5. Answer Explanation
+
+Users can request an explanation for each question.
+
+The explanation helps students understand why the correct answer is correct and why other options may be incorrect.
+
+### 6. Prerequisite Knowledge Generation
+
+The system can generate prerequisite knowledge for a selected question.
+
+This feature provides background concepts and definitions that help students understand the question before answering it.
+
+### 7. Similar Question Generation
+
+Users can generate a similar question based on an existing question.
+
+This helps students practice the same concept in a different form and supports reinforcement learning.
+
+### 8. Save Questions to JSON
+
+Generated questions can be saved into a JSON file.
+
+The JSON file stores the generated questions in a structured format, including:
+
+* Question ID
+* Question text
+* Options
+* Correct answer
+* Translations field for possible future extension
+
+The JSON file is mainly designed for system reuse, future question bank development, and possible integration with databases or learning platforms.
+
+## Tech Stack
+
+* Python
+* Streamlit
+* LiteLLM
+* Gemini API
+* OpenAI API
+* JSON
+
+## Project Structure
+
+```text
+mcq_generator/
+│
+├── apps/
+│   └── streamlit_apps/
+│       └── main.py
+│
+├── src/
+│   └── mcq_generator/
+│       ├── mcq_generator.py
+│       ├── prompt_builder.py
+│       ├── question_generator.py
+│       ├── question_prerequsite.py
+│       └── similar_question_generator.py
+│
+├── tests/
+│
+├── requirements.txt
+├── questions.json
+└── README.md
 ```
 
-### Arguments:
-- `--field`, `-f` (required): Subject field for questions
-- `--subfield`, `-sf` (optional): Sub-category within the field
-- `--difficulty`, `-d` (default: medium): Easy, medium, or hard
-- `--count`, `-c` (default: 5): Number of questions to generate
-- `--options`, `-o` (required): Number of options per question (> 1)
-- `--correct-answers` (default: 1): Number of correct answers per question
-  - `0`: Generates "None of the Above" questions
-  - Equal to `--options`: Generates "All of the Above" questions
-- `--max-tokens` (default: 3000): Maximum tokens for LLM response
-- `--provider` (default: perplexity): LLM provider (openai, claude, perplexity, litellm)
-- `--model` (default: sonar): Model name specific to the provider
-- `--save`: Output JSON file (auto-generated filename if not specified)
+## Main Components
 
-## Technical Detail
+### `main.py`
 
-The **MCQ Generator** is built using Python with the **LiteLLM** library, providing a unified interface for multiple LLM providers. The system includes:
+This is the main Streamlit application file.
 
-- **mcq_generate_cli.py**: Command-line interface with argument parsing and validation
-- **MCQGenerationEngine**: Core engine managing question generation and display
-- **QuestionGenerator**: Handles LLM API calls via LiteLLM and response parsing
-- **PromptBuilder**: Creates optimized prompts with 20+ competitive exam rules
+It provides the web interface and connects user input with the backend modules. It allows users to generate questions, check answers, request explanations, generate prerequisite knowledge, generate similar questions, and save results to JSON.
 
-The system ensures content meets factual accuracy and adheres to educational best practices through comprehensive prompt engineering.
+### `mcq_generator.py`
 
-## Real-World Applications
+This file contains the core MCQ generation logic.
 
-This tool has a broad range of applications across various fields:
-- **Education**: Teachers can quickly generate quizzes for assessments or homework.
-- **E-Learning Platforms**: Content creators can generate quizzes that complement their online courses.
-- **Corporate Training**: HR departments can create skill evaluation tests for employees.
-- **Test Prep Companies**: Generate practice questions for standardized tests like SAT, GRE, etc.
-- **Gamified Learning Apps**: Integrate endless MCQs into educational games for dynamic learning experiences.
+It includes classes for generating questions, parsing LLM responses, validating input, saving questions, loading questions, and displaying questions.
 
-## Testing
+### `prompt_builder.py`
 
-The MCQ Generator includes comprehensive unit tests covering all major components:
+This file builds prompts for different LLM tasks, such as:
+
+* MCQ generation
+* Answer explanation
+* Prerequisite knowledge generation
+* Similar question generation
+
+Prompt engineering is an important part of this project because the quality of generated questions depends heavily on the prompt design.
+
+### `question_prerequsite.py`
+
+This file generates prerequisite knowledge for a selected question.
+
+It helps students understand the background concepts needed to answer the question.
+
+### `similar_question_generator.py`
+
+This file generates similar questions based on an existing question.
+
+It supports additional practice and concept reinforcement.
+
+## Installation
+
+Clone the repository:
 
 ```bash
-python -m unittest test_mcq_generator -v
+git clone https://github.com/your-username/mcq-generator.git
+cd mcq-generator
 ```
 
-### Test Coverage:
-- **PromptBuilder**: 11 tests covering all prompt generation methods
-- **QuestionGenerator**: 11 tests covering parsing and answer extraction
-- **MCQGenerationEngine**: 6 tests covering validation and display
-- **Total**: 28 tests, 100% pass rate
+Create and activate a virtual environment:
 
-### Key Test Scenarios:
-- Dynamic option generation (2-6 options)
-- Multiple answer formats (comma-separated, "and", special cases)
-- "All of the Above" and "None of the Above" handling
-- Input validation and error handling
-- Edge cases and boundary conditions
+```bash
+python -m venv .venv
+```
 
-## Looking Ahead
+On Windows PowerShell:
 
-The future of the MCQ Generator is bright, with planned enhancements such as:
-- **Support for More Languages**: Expand multilingual question generation.
-- **LMS Integration**: Seamlessly connect to popular learning management systems.
-- **Advanced Analytics**: Track question performance and difficulty for continuous improvement.
-- **Collaborative Features**: Enable team-based question creation and curation.
-- **Batch Processing**: Generate multiple question sets in a single operation.
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## API Key Setup
+
+To use Gemini models, set your Gemini API key:
+
+```bash
+$env:GEMINI_API_KEY="your_gemini_api_key"
+```
+
+To use OpenAI models, set your OpenAI API key:
+
+```bash
+$env:OPENAI_API_KEY="your_openai_api_key"
+```
+
+For the current demo, Gemini is recommended.
+
+## Run the Application
+
+Run the Streamlit app:
+
+```bash
+streamlit run apps/streamlit_apps/main.py
+```
+
+After running the command, the app will open in the browser.
+
+## How to Use
+
+1. Select a model.
+2. Enter or select a Computer Science topic.
+3. Choose the difficulty level.
+4. Choose the number of questions.
+5. Click **Generate Questions**.
+6. Select an answer and click **Check**.
+7. Click **Explain** to get an explanation.
+8. Click **Prereq** to get prerequisite knowledge.
+9. Click **Similar** to generate a similar practice question.
+10. Click **Save Questions to JSON** to save the generated questions.
+
+## Example Demo Topic
+
+Recommended topic for demo:
+
+```text
+Python Programming - Functions and Loops
+```
+
+Recommended settings:
+
+```text
+Model: gemini/gemini-2.5-flash-lite
+Difficulty: Easy
+Number of questions: 3
+```
+
+This topic is simple, easy to verify, and suitable for demonstrating the main features of the system.
+
+## Example JSON Output
+
+```json
+{
+  "Python Programming - Functions and Loops": {
+    "questions": [
+      {
+        "id": "Python Programming - Functions and Loops_1",
+        "question": "Which keyword is used to define a function in Python?",
+        "options": {
+          "A": "func",
+          "B": "define",
+          "C": "def",
+          "D": "function"
+        },
+        "correct_answer": "C",
+        "translations": {}
+      }
+    ]
+  }
+}
+```
+
+## Purpose of JSON Storage
+
+The JSON file is not mainly designed for human reading. It stores generated questions in a structured format so that the system can reuse them later or integrate them into a future database, question bank, or learning platform.
+
+## Educational Value
+
+This project demonstrates how LLMs can support Computer Science instruction by automating repetitive teaching tasks.
+
+The system can help with:
+
+* Creating practice questions
+* Providing immediate feedback
+* Explaining correct answers
+* Preparing prerequisite knowledge
+* Creating similar practice questions
+* Saving generated questions for reuse
+
+The project does not aim to replace instructors. Instead, it acts as an assistant that can reduce preparation time and support students during self-study.
+
+## Limitations
+
+Although LLMs can generate useful educational content, the output may still contain errors or unclear explanations.
+
+Main limitations include:
+
+* Generated questions may sometimes be incorrect.
+* Correct answers may need human verification.
+* Explanations may be too long or too general.
+* Some technical topics may require instructor review.
+* The current version uses JSON storage instead of a full database.
+
+Therefore, human review is still necessary before using generated questions in formal assessments.
+
+## Future Work
+
+Possible future improvements include:
+
+* Integrating a database for question storage
+* Supporting user accounts
+* Adding question editing features
+* Adding more question types
+* Integrating with learning management systems
+* Adding automatic quality checking for generated questions
+* Supporting analytics for student performance
 
 ## Conclusion
 
-The **AI-powered MCQ Generator** may be useful to educators, content creators, and e-learning professionals. By automating the creation of high-quality, tailored multiple-choice questions, this tool not only saves time but also opens up new avenues for personalized learning, adaptive testing, and data-driven insights.
-
-We invite educators, trainers, and quiz enthusiasts to experience how AI is revolutionizing quiz creation. With the MCQ Generator, high-quality educational content becomes more **accessible**, **adaptable**, and **engaging** than ever before.
-
+The MCQ Generator shows how LLMs can be used to automate parts of Computer Science instruction. By generating questions, explanations, prerequisite knowledge, and similar practice questions, the system provides a practical example of how AI can support both instructors and students in the learning process.
