@@ -3,7 +3,7 @@ Unit tests for MCQ Generator modules
 """
 
 import unittest
-from prompt_builder import PromptBuilder
+from mcq_generator.prompt_builder import PromptBuilder
 from mcq_generator import QuestionGenerator
 
 

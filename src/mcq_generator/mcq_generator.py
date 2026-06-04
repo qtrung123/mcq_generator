@@ -16,8 +16,7 @@ from dataclasses import dataclass
 import litellm
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-from prompt_builder import PromptBuilder
-
+from mcq_generator.prompt_builder import PromptBuilder
 
 # Constants
 LOG_FILE = "mcq_generate.log"
@@ -102,6 +101,10 @@ class QuestionGenerator:
         ]
         option_pattern = r"\s*".join(option_pattern_parts)
         pattern = f"Question:\\s*(.+?)\\n{option_pattern}\\s*Correct Answer:\\s*([^\n]+)"
+
+        response_text = re.sub(r"\*\*", "", response_text)
+        response_text = re.sub(r"##\s*Question\s*\d+\s*:", "Question:", response_text)
+        response_text = re.sub(r"Correct Answer:\s*([A-D])\.\s*.*", r"Correct Answer: \1", response_text)
 
         match = re.search(pattern, response_text, re.DOTALL)
         if match:
@@ -208,7 +211,11 @@ class QuestionGenerator:
 
         try:
             content = self._call_llm(prompt, max_tokens)
-            response_list = content.strip().split("\n\n")
+
+            print("RAW MODEL OUTPUT:")
+            print(content)
+            
+            response_list = re.split(r"(?=##\s*Question\s*\d+:|Question:)", content.strip())
         except Exception as e:
             logger.error("Error generating questions after retries: %s", e)
             return []  # Return an empty list on error

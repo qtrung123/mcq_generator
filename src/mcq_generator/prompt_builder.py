@@ -78,7 +78,25 @@ Question: [Question text]
 {option_format}
 {answer_format}
 
-Each question should be solvable independently and represent diverse aspects of {field}."""
+Each question should be solvable independently and represent diverse aspects of {field}.
+
+IMPORTANT:
+Return ONLY plain text.
+Do NOT use markdown.
+Do NOT use bullet points.
+Do NOT add explanations.
+
+STRICT OUTPUT FORMAT:
+
+Question: [Question text]
+A. [Option A]
+B. [Option B]
+C. [Option C]
+D. [Option D]
+Correct Answer: [A/B/C/D]
+
+Repeat this exact format for every question.
+"""
 
         return new_prompt
     

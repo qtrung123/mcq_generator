@@ -12,7 +12,7 @@ from dataclasses import dataclass
 import litellm
 from tqdm import tqdm
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-from prompt_builder import PromptBuilder
+from mcq_generator.prompt_builder import PromptBuilder
 
 # Configure logging for this module
 logger = logging.getLogger(__name__)

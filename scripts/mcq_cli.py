@@ -245,7 +245,7 @@ def cmd_explain(args, cli_app):
 
         question = questions[args.question_num - 1]
 
-        from prompt_builder import PromptBuilder
+        from mcq_generator.prompt_builder import PromptBuilder
         prompt_builder = PromptBuilder()
 
         # Handle both dict and list formats for options
